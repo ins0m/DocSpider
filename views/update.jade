@@ -1,0 +1,20 @@
+block content
+	.modal-header
+		button(data-dismiss="modal",aria-hidden="true").close
+			| &times;
+		h4.modal-title Updated references:
+	.modal-body
+		.row
+			if files
+				.col-md-12
+					if files
+						table.table.table-hover.table-condensed
+							th From
+							th To
+								each item, i in files
+									tr
+										td
+											span.glyphicon.glyphicon-ok
+										td.warning #{item}
+	.modal-footer
+		a.button(href="/doc").btn.btn-default Close and reload page

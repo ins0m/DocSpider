@@ -1,0 +1,12 @@
+{
+  "name": "docSpider",
+  "version": "0.1.4",
+  "dependencies": {
+    "bootstrap": "3.3.4",
+    "jquery-ui": "1.11.2",
+    "jquery": "1.11.2"
+  },
+  "ignore":[
+  	"fonts"
+  ]
+}

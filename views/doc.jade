@@ -1,0 +1,140 @@
+extends layout
+block content
+	if list
+		.col-md-3(style="position:absolute; top: 0; left: 0; bottom: 0")
+			.doc-group
+				div.doc-header.active
+					| Active projects
+					button(type="button", data-toggle="modal",data-target="#myModal").btn.btn-danger.btn-xs.pull-right
+						span.glyphicon.glyphicon-refresh
+					.clearfix
+				if list['']
+					- var uncategorizedDocs = list['']
+					each item in uncategorizedDocs
+						a.doc-group-item.uncategorized(data-toggle="collapse", href="#"+item.docFilename.replace(/\.md/,"").replace(/\s/g,"_")) 
+							|  #{item.appName}
+							if item.chapters.length !=0
+								span.glyphicon.glyphicon-chevron-down.pull-right.item-arrow
+						if fileName == item.docFilename
+							div(id=item.docFilename.replace(/\.md/,"").replace(/\s/g,"_")).panel-collapse.collapse-in.uncategorized
+								if item.chapters
+									each chapter in item.chapters
+										a.doc-group-chapter(style="padding-left:#{10+chapter.depth*10}px", href="/doc/"+item.docFilename)
+											|  #{chapter.text}
+						else
+							div(id=item.docFilename.replace(/\.md/,"").replace(/\s/g,"_")).panel-collapse.collapse.uncategorized
+								if item.chapters
+									each chapter in item.chapters
+										a.doc-group-chapter(style="padding-left:#{10+chapter.depth*10}px", href="/doc/"+item.docFilename)
+											|  #{chapter.text}
+
+				if list['Artifacts']
+					a(data-toggle="collapse", href="#artifacts").doc-group-item.doc-category-artifact
+						| Artifacts
+						span.glyphicon.glyphicon-chevron-down.pull-right(style="margin-left:10px")
+						.badge.pull-right
+							| #{list['Artifacts'].length}	
+					div#artifacts.panel-collapse.collapse
+						each item in list['Artifacts']
+							a.accordion-toggle(href="/doc/"+item.docFilename, class='doc-group-item') 
+								|  #{item.appName}
+								if item.chapters
+									each chapter in item.chapters
+										.doc-group-chapter(style="padding-left:#{chapter.depth*10}px")
+											|  #{chapter.text}
+				if list['Blog']
+					a(data-toggle="collapse", href="#blog").doc-group-item.doc-category-blog
+						| Blogs
+						span.glyphicon.glyphicon-chevron-down.pull-right(style="margin-left:10px")
+						.badge.pull-right
+							| #{list['Blog'].length}	
+					div#blog.panel-collapse.collapse
+						each item in list['Blog']
+							a.doc-group-item(href="/doc/"+item.docFilename) 
+								|  #{item.appName}
+								if item.chapters
+									each chapter in item.chapters
+										.doc-group-chapter(style="padding-left:#{chapter.depth*10}px")
+											|  #{chapter.text}
+				each category, categoryName in list
+					if (categoryName != "" && categoryName != "Artifacts" && categoryName != "Blog")
+						.doc-group-item.doc-category
+							| #{categoryName}
+							.badge.pull-right
+								| #{category.length}	
+						each item in category
+							a.doc-group-item(data-toggle="collapse", href="#"+item.docFilename.replace(/\.md/,"").replace(/\s/g,"_")) 
+								|  #{item.appName}
+								if item.chapters.length !=0
+									span.glyphicon.glyphicon-chevron-down.pull-right.item-arrow
+							div(id=item.docFilename.replace(/\.md/,"").replace(/\s/g,"_")).panel-collapse.collapse(class= (fileName == item.docFilename) ? "in" : "")
+								if item.chapters
+									each chapter in item.chapters
+										a.doc-group-chapter(style="padding-left:#{10+chapter.depth*10}px", href="/doc/"+item.docFilename)
+											|  #{chapter.text}
+	.row
+		.col-xs-9.col-xs-offset-3
+			.row
+				.col-xs-12
+					h1 DocSpider grabbed documentation
+				br
+				br
+
+			if readme
+				.row
+					.col-xs-12
+						.panel.panel-default
+							.panel-heading 
+								.pull-left
+									h4
+										| #{fileName}
+								.pull-right
+									.doc-metadata
+										.label.label-danger 
+											a(href=appRepo, style="color:white;text-decoration:underline") #{appRepo} 
+											span.glyphicon.glyphicon-cloud-upload
+									.doc-metadata
+										.label.label-default #{appDir} 
+											span.glyphicon.glyphicon-hdd
+								.clearfix
+							.panel-body.readme
+								if readme
+									p !{readme}
+			else 
+				.row
+					.col-xs-12
+						.panel.panel-danger
+							.panel-heading 
+								.pull-left
+									h4
+										| Nothing selected
+								.clearfix
+							.panel-body.readme
+								| Please select what you are interested in on the left side.
+								br
+								br
+								i.pull-right- Team Engineers
+
+	<!-- Modal -->
+	div(role="dialog",aria-hidden="true",data-remote="/doc/update").modal.fade#myModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button(data-dismiss="modal",aria-hidden="true").close
+						| &times;
+					h4.modal-title Re-Indexing all documentation files
+				.modal-body
+					.row
+						.col-xs-3
+						.col-xs-6
+							.doc-group-item.active(style="text-align:center")
+								| Creating new index. Go get coffee.
+
+							br
+							br
+						.col-xs-3
+					.row
+						.col-xs-12
+							img(src="/images/coffee-loader.gif",style="width:120px; margin:auto; display:block");
+				.modal-footer
+					a.button(href="/doc").btn.btn-default Close and reload page

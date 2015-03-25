@@ -1,0 +1,6 @@
+ppackages
+.idea/*
+node_modules
+.sass_cache
+.git
+bower_components
